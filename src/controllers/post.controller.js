@@ -1,3 +1,5 @@
+const { Op } = require("sequelize");
+
 const { Post, User, PostImage, Comment, Tag } = require("../models");
 
 const create = async (req, res) => {
@@ -9,23 +11,78 @@ const create = async (req, res) => {
     }
 };
 
+
 const getAll = async (req, res) => {
     try {
+
+        const months = process.env.COMMENT_VISIBLE_MONTHS || 6;
+
+        const limitDate = new Date();
+
+        limitDate.setMonth(limitDate.getMonth() - months);
+
         const posts = await Post.findAll({
-            include: [User, PostImage, Comment, Tag]
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Comment,
+                    where: {
+                        createdAt: {
+                            [Op.gte]: limitDate
+                        }
+                    },
+                    required: false
+                },
+                {
+                    model: PostImage
+                },
+                {
+                    model: Tag
+                }
+            ]
         });
 
         res.json(posts);
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
 
 const getById = async (req, res) => {
     try {
+
+        const months = process.env.COMMENT_VISIBLE_MONTHS || 6;
+
+        const limitDate = new Date();
+
+        limitDate.setMonth(limitDate.getMonth() - months);
+
         const post = await Post.findByPk(req.params.id, {
-            include: [User, PostImage, Comment, Tag]
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Comment,
+                    where: {
+                        createdAt: {
+                            [Op.gte]: limitDate
+                        }
+                    },
+                    required: false
+                },
+                {
+                    model: PostImage
+                },
+                {
+                    model: Tag
+                }
+            ]
         });
 
         if (!post) {
@@ -37,7 +94,9 @@ const getById = async (req, res) => {
         res.json(post);
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({
+            error: error.message
+        });
     }
 };
 

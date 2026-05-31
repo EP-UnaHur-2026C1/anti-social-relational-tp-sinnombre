@@ -1,5 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./docs/swagger.yaml");
 
 const routes = require("./src/routes");
 const db = require("./src/models");
@@ -13,6 +18,8 @@ db.sequelize.sync()
   .then(() => {
     console.log("Base de datos conectada");
 
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en puerto ${PORT}`);
     });
