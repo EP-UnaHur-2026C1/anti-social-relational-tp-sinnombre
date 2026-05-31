@@ -7,6 +7,8 @@ const tagSchema = require("../middlewares/validations/tag.schema");
 
 router.post("/", validate(tagSchema), tagController.create);
 router.get("/", tagController.getAll);
+router.get("/:id", tagController.getById);
+router.put("/:id", validate(tagSchema), tagController.update);
 router.delete("/:id", tagController.remove);
 
 module.exports = router;

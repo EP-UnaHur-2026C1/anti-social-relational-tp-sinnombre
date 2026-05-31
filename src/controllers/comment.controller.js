@@ -18,6 +18,32 @@ const getAll = async (req, res) => {
     }
 };
 
+const getById = async (req, res) => {
+    const comment = await Comment.findByPk(req.params.id);
+
+    if (!comment) {
+        return res.status(404).json({
+            message: "Comentario no encontrado"
+        });
+    }
+
+    res.json(comment);
+};
+
+const update = async (req, res) => {
+    const comment = await Comment.findByPk(req.params.id);
+
+    if (!comment) {
+        return res.status(404).json({
+            message: "Comentario no encontrado"
+        });
+    }
+
+    await comment.update(req.body);
+
+    res.json(comment);
+};
+
 const remove = async (req, res) => {
     try {
         const comment = await Comment.findByPk(req.params.id);
@@ -39,8 +65,12 @@ const remove = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     create,
     getAll,
+    getById,
+    update,
     remove
 };

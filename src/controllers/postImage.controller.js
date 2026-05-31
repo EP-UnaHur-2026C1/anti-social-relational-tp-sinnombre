@@ -30,7 +30,49 @@ const remove = async (req, res) => {
     }
 };
 
+const getById = async (req, res) => {
+    const image = await PostImage.findByPk(req.params.id);
+
+    if (!image) {
+        return res.status(404).json({
+            message: "Imagen no encontrada"
+        });
+    }
+
+    res.json(image);
+};
+
+const update = async (req, res) => {
+    const image = await PostImage.findByPk(req.params.id);
+
+    if (!image) {
+        return res.status(404).json({
+            message: "Imagen no encontrada"
+        });
+    }
+
+    await image.update(req.body);
+
+    res.json(image);
+};
+
+const getAll = async (req, res) => {
+    try {
+        const images = await PostImage.findAll();
+
+        res.status(200).json(images);
+    } catch (error) {
+        res.status(500).json({
+            message: "Error al obtener las imágenes",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     create,
-    remove
+    getById,
+    remove,
+    getAll,
+    update 
 };

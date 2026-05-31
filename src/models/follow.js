@@ -13,12 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  Follow.init({
-    followerId: DataTypes.INTEGER,
-    followingId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Follow',
-  });
-  return Follow;
+Follow.init({
+  followerId: DataTypes.INTEGER,
+  followingId: DataTypes.INTEGER
+}, {
+  sequelize,
+  modelName: 'Follow',
+  indexes: [
+    {
+      unique: true,
+      fields: ['followerId', 'followingId']
+    }
+  ]
+})
 };
